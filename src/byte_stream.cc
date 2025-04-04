@@ -45,20 +45,19 @@ void Reader::pop( uint64_t len )
   if ( n == 0 ) {
     return;
   }
-
+  uint64_t i = 0;
+  while (i < n) {
+    uint64_t bytes_size = buffer_.front().size();
+    uint64_t popped_size = std::min(bytes_size, n - i);
+    if (popped_size == bytes_size) {
+      buffer_.pop_front();
+    } else {
+      auto& bytes = buffer_.front();
+      bytes = bytes.substr(popped_size);
+    }
+    i += popped_size;
+  }
   bytes_popped_ += n;
-  uint64_t next_size = peek().size();
-  while ( n > next_size ) {
-    n -= next_size;
-    buffer_.pop_front();
-    next_size = peek().size();
-  }
-  if ( n == next_size ) {
-    buffer_.pop_front();
-  } else if ( n > 0 ) {
-    std::string& next_bytes = buffer_.front();
-    next_bytes = next_bytes.substr( n );
-  }
 }
 
 bool Reader::is_finished() const
