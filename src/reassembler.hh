@@ -1,6 +1,7 @@
 #pragma once
 
 #include "byte_stream.hh"
+#include <map>
 
 class Reassembler
 {
@@ -43,4 +44,8 @@ public:
 
 private:
   ByteStream output_;
+  bool last_ {};
+  std::map<uint64_t, std::string> storage_ {};
+
+  void should_close_writer();
 };
